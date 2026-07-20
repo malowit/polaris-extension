@@ -11,7 +11,7 @@ Polaris does not collect, store, transmit, or share any personal data. The exten
 The extension stores your preferences (selected currencies, display mode, language, theme) locally on your device using Chrome's built-in storage API. This data never leaves your device.
 
 ## Third-party Services
-Polaris fetches currency exchange rates from cdn.jsdelivr.net and api.frankfurter.app. These requests contain no personal information — only currency codes (e.g. "KZT", "USD").
+Polaris fetches currency exchange rates from cdn.jsdelivr.net and api.frankfurter.app. These requests contain no personal information — only currency codes (e.g. "KZT", "USD", "CNY" etc.).
 
 ## Contact
 If you have any questions, contact us at malowit@gmail.com or t.me/malowit
