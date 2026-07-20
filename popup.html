@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Polaris</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0f1235;
+      --surface: #1a1f4e;
+      --border:  #2a3070;
+      --text:    #ffffff;
+      --sub:     #7a85c0;
+      --accent:  #F0B429;
+    }
+    body.light {
+      --bg:      #f0f0dc;
+      --surface: #e4e4c8;
+      --border:  #c8c8a0;
+      --text:    #0f1235;
+      --sub:     #5a6040;
+      --accent:  #8a7a00;
+    }
+
+    body {
+      width: 300px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .header {
+      padding: 14px 18px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo-img { height: 22px; width: auto; filter: none; transition: filter 0.2s; }
+    body.light .logo-img { filter: invert(1); }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+
+    .icon-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--sub); width: 28px; height: 28px;
+      border-radius: 6px; font-size: 14px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .icon-btn:hover, .icon-btn.active { color: var(--text); border-color: var(--sub); }
+
+    .toggle-wrap { position: relative; width: 38px; height: 22px; }
+    .toggle-wrap input { opacity: 0; width: 0; height: 0; }
+    .track {
+      position: absolute; inset: 0; background: var(--border);
+      border-radius: 11px; cursor: pointer; transition: background 0.2s;
+    }
+    .track::after {
+      content: ""; position: absolute;
+      left: 3px; top: 3px; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--sub); transition: all 0.2s;
+    }
+    input:checked + .track { background: #2a3d8f; }
+    input:checked + .track::after { transform: translateX(16px); background: #6c8fff; }
+    body.light input:checked + .track { background: #b0b888; }
+    body.light input:checked + .track::after { background: #5a6040; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .currencies {
+      padding: 10px 18px;
+      display: flex; flex-direction: column; gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .field-label {
+      color: var(--sub); font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px;
+    }
+    .field-select {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); padding: 9px 12px; border-radius: 8px;
+      font-size: 13px; outline: none; cursor: pointer;
+      appearance: none; -webkit-appearance: none;
+      transition: border-color 0.15s, opacity 0.15s;
+    }
+    .field-select:focus { border-color: #6c8fff; }
+
+    .hint {
+      font-size: 10px;
+      color: var(--sub);
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .rate {
+      padding: 10px 18px; font-size: 11px; color: var(--sub);
+      text-align: center; min-height: 34px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rate-value { color: var(--accent); font-weight: 600; }
+
+    .footer-feedback {
+      padding: 8px 18px; font-size: 10px; text-align: center;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .footer-feedback a { text-decoration: none; transition: opacity 0.15s; }
+    .footer-feedback a:hover { text-decoration: underline; opacity: 0.8; }
+    body:not(.light) .footer-feedback a { color: #7a85c0; }
+    body.light .footer-feedback a { color: #5a6040; }
+    body:not(.light) .footer-feedback span { color: #7a85c0; }
+    body.light .footer-feedback span { color: #5a6040; }
+
+    .settings-header {
+      padding: 13px 18px; display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .back-btn {
+      background: transparent; border: none;
+      color: var(--sub); font-size: 18px; cursor: pointer; padding: 0; line-height: 1;
+    }
+    .back-btn:hover { color: var(--text); }
+    .settings-title { font-size: 13px; font-weight: 600; color: var(--text); }
+
+    .setting-item {
+      padding: 12px 18px; border-bottom: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .setting-item:last-child { border-bottom: none; }
+    .setting-row { display: flex; align-items: center; justify-content: space-between; }
+    .setting-name {
+      color: var(--sub); font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .setting-select {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); padding: 8px 12px; border-radius: 8px;
+      font-size: 13px; outline: none; cursor: pointer;
+      appearance: none; -webkit-appearance: none;
+    }
+    .setting-select:focus { border-color: #6c8fff; }
+
+    .s-toggle-wrap { position: relative; width: 34px; height: 20px; flex-shrink: 0; }
+    .s-toggle-wrap input { opacity: 0; width: 0; height: 0; }
+    .s-track {
+      position: absolute; inset: 0; background: var(--border);
+      border-radius: 10px; cursor: pointer; transition: background 0.2s;
+    }
+    .s-track::after {
+      content: ""; position: absolute;
+      left: 2px; top: 2px; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--sub); transition: all 0.2s;
+    }
+    input:checked + .s-track { background: #2a3d8f; }
+    input:checked + .s-track::after { transform: translateX(14px); background: #6c8fff; }
+    body.light input:checked + .s-track { background: #b0b888; }
+    body.light input:checked + .s-track::after { background: #5a6040; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img class="logo-img" src="polaris-logo.png" alt="Polaris" />
+    <div class="header-right">
+      <button class="icon-btn" id="settings-btn" title="Settings">⚙</button>
+      <label class="toggle-wrap">
+        <input type="checkbox" id="toggle" />
+        <span class="track"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Main screen -->
+  <div class="screen active" id="screen-main">
+    <div class="currencies">
+      <div>
+        <div class="field-label" id="lbl-local"></div>
+        <select class="field-select" id="local-currency"></select>
+      </div>
+      <div>
+        <div class="field-label" id="lbl-home"></div>
+        <select class="field-select" id="home-currency"></select>
+      </div>
+      <div class="hint" id="hint"></div>
+    </div>
+    <div class="rate" id="rate">—</div>
+    <div class="footer-feedback">
+      <a href="https://t.me/malowit" target="_blank" id="feedback-tg"></a>
+      <span>·</span>
+      <a href="mailto:malowit@gmail.com" id="feedback-email"></a>
+    </div>
+  </div>
+
+  <!-- Settings screen -->
+  <div class="screen" id="screen-settings">
+    <div class="settings-header">
+      <button class="back-btn" id="back-btn">←</button>
+      <span class="settings-title" id="lbl-settings"></span>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-name" id="lbl-language"></div>
+      <select class="setting-select" id="language-select">
+        <option value="en">English</option>
+        <option value="ru">Русский</option>
+        <option value="zh">中文</option>
+      </select>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-name" id="lbl-display"></div>
+      <select class="setting-select" id="display-mode">
+        <option value="beside"  id="opt-beside"></option>
+        <option value="replace" id="opt-replace"></option>
+      </select>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-name" id="lbl-theme"></div>
+      <select class="setting-select" id="theme-select">
+        <option value="system" id="opt-theme-system"></option>
+        <option value="dark"   id="opt-theme-dark"></option>
+        <option value="light"  id="opt-theme-light"></option>
+      </select>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-row">
+        <span class="setting-name" id="lbl-autodetect"></span>
+        <label class="s-toggle-wrap">
+          <input type="checkbox" id="auto-detect-toggle" />
+          <span class="s-track"></span>
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

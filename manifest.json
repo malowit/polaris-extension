@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Polaris",
+  "version": "1.0.0",
+  "description": "Converts prices on any webpage to your currency",
+
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+
+  "host_permissions": [
+    "https://api.frankfurter.app/*",
+    "https://cdn.jsdelivr.net/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "icons": {
+    "16":  "polaris-star_16.png",
+    "48":  "polaris-star_48.png",
+    "128": "polaris-star_128.png"
+  },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Polaris ✦",
+    "default_icon": {
+      "16":  "polaris-star_16.png",
+      "48":  "polaris-star_48.png",
+      "128": "polaris-star_128.png"
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["detector.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
